@@ -102,6 +102,17 @@ class QuestionModel
         }
     }
 
+    public static function AddCategory(string $name)
+    {
+        $db = Database::CreateDatabaseConnexion();
+
+        $statement = $db->prepare("INSERT INTO category (name) VALUES (:n)");
+        $statement->execute
+        ([
+            'n' => $name
+        ]);
+    }
+
     public static function RemoveQuestionById(int $id)
     {
         $db = Database::CreateDatabaseConnexion();
@@ -113,6 +124,17 @@ class QuestionModel
         ]);
 
         $statement = $db->prepare("DELETE FROM token WHERE idQuestion = :i");
+        $statement->execute
+        ([
+            'i' => $id
+        ]);
+    }
+
+    public static function RemoveCategoryById(int $id)
+    {
+        $db = Database::CreateDatabaseConnexion();
+
+        $statement = $db->prepare("DELETE FROM category WHERE idCategory = :i");
         $statement->execute
         ([
             'i' => $id
