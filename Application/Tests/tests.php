@@ -2,7 +2,33 @@
 
 require_once '../Model/QuestionModel.php';
 
-$questions = QuestionModel::GetRandomQuestionsByCategoryId(1, QuestionModel::GetCategoryIdFromName('Sciences'));
+$newQuestion = new Question();
+$newQuestion->idCategory = QuestionModel::GetCategoryIdFromName('Histoire');
+$newQuestion->badTokenIndex = 0;
+$newQuestion->correctToken = 'Bonsoir,';
+$t = new Token();
+$t->content = "Bonjour,";
+array_push($newQuestion->tokens, $t);
+$t = new Token();
+$t->content = "je";
+array_push($newQuestion->tokens, $t);
+$t = new Token();
+$t->content = "suis";
+array_push($newQuestion->tokens, $t);
+$t = new Token();
+$t->content = "une";
+array_push($newQuestion->tokens, $t);
+$t = new Token();
+$t->content = "question";
+array_push($newQuestion->tokens, $t);
+$t = new Token();
+$t->content = "d'histoire.";
+array_push($newQuestion->tokens, $t);
+
+//QuestionModel::AddQuestion($newQuestion);
+//QuestionModel::RemoveQuestionById(10);
+
+$questions = QuestionModel::GetRandomQuestionsByCategoryId(1, QuestionModel::GetCategoryIdFromName('Histoire'));
 
 foreach($questions as $q)
 {

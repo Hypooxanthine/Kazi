@@ -15,6 +15,11 @@ class Question
     public string $correctToken;
     public int $idCategory;
     public array $tokens;
+
+    function __construct()
+    {
+        $this->tokens = array();
+    }
 }
 
 ?>

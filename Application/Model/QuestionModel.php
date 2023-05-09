@@ -80,6 +80,45 @@ class QuestionModel
         return $rawCategory[0]['name'];
     }
 
+    public static function AddQuestion(Question $question) : void
+    {
+        $db = Database::CreateDatabaseConnexion();
+
+        $statement = $db->prepare("INSERT INTO question (nbTokens, imagePath, badTokenIndex, correctToken, idCategory) VALUES (:n, :ip, :b, :c, :ic)");
+        $statement->execute
+        ([
+            'n' => count($question->tokens),
+            'ip' => ($question->imagePath == null ? '' : $question->imagePath),
+            'b' => $question->badTokenIndex,
+            'c' => $question->correctToken,
+            'ic' => $question->idCategory
+        ]);
+
+        int: $insertedQuestionID = $db->lastInsertId();
+
+        foreach($question->tokens as $index => $token)
+        {
+            QuestionModel::AddToken($token->content, $index, $insertedQuestionID);
+        }
+    }
+
+    public static function RemoveQuestionById(int $id)
+    {
+        $db = Database::CreateDatabaseConnexion();
+
+        $statement = $db->prepare("DELETE FROM question WHERE idQuestion = :i");
+        $statement->execute
+        ([
+            'i' => $id
+        ]);
+
+        $statement = $db->prepare("DELETE FROM token WHERE idQuestion = :i");
+        $statement->execute
+        ([
+            'i' => $id
+        ]);
+    }
+
     /* Private stuff */
     
     private static function GetTokenFromRaw(array $raw) : Token
@@ -104,6 +143,19 @@ class QuestionModel
         $out->tokens = QuestionModel::GetTokensByQuestionId($out->idQuestion);
 
         return $out;
+    }
+
+    private static function AddToken(string $content, int $index, int $idQuestion) : void
+    {
+        $db = Database::CreateDatabaseConnexion();
+
+        $statement = $db->prepare("INSERT INTO token (content, tokenIndex, idQuestion) VALUES (:c, :t, :i)");
+        $statement->execute
+        ([
+            'c' => $content,
+            't' => $index,
+            'i' => $idQuestion
+        ]);
     }
 }
 
